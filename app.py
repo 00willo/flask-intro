@@ -30,7 +30,7 @@ def home():
     posts = []
     try:
         # return "Hello, world!"  # return a string
-        g.db.connect_db()
+        g.db = connect_db()
         cur = g.db.execute('select * from posts')
 
         for row in cur.fetchall():
@@ -41,7 +41,7 @@ def home():
         #          for row in cur.fetchall()]
 
         g.db.close()
-    except:
+    except sqlite3.OperationalError:
         flash("You have no database!")
     return render_template("index.html", posts=posts)  # render a template
 
