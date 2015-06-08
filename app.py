@@ -8,7 +8,7 @@ import sqlite3
 app = Flask(__name__)
 
 app.secret_key = "my precious key"
-app.database = "sample.db"
+app.database = "sampl2e.db"
 
 
 # login required decorator
@@ -22,21 +22,27 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
+
 # use decorators to link the function to a url
 @app.route('/')
 @login_required
 def home():
-    # return "Hello, world!"  # return a string
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-
     posts = []
-    for row in cur.fetchall():
-        posts.append(dict(title=row[0], description=row[1]))
+    try:
+        # return "Hello, world!"  # return a string
+        g.db.connect_db()
+        cur = g.db.execute('select * from posts')
 
-    # posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]a
+        for row in cur.fetchall():
+            posts.append(dict(title=row[0], description=row[1]))
 
-    g.db.close()
+        # posts = [dict(title=row[0],
+        #               description=row[1])
+        #          for row in cur.fetchall()]
+
+        g.db.close()
+    except:
+        flash("You have no database!")
     return render_template("index.html", posts=posts)  # render a template
 
 
